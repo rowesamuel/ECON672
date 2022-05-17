@@ -101,26 +101,34 @@ save `cps', emptyok
 
 *Use Census CPS instead of NBER MORG
 
-*Loop over each year and append 3 small MORG files into 1 cps file
-*Small MORG file only has individuals for MD, VA, and D.C.
-foreach y of numlist 2017/2019 {
-  *Show the year
-  display "`y'"
-  local filename "`url'small_morg`y'.dta?raw=true"
-  display "`filename'"
-  use "`filename'", clear
-  append using `cps'
-  save `cps', replace
-  clear
+*Loop over each year and month to append monthly CPS files into 1 cps file
+local month jan feb mar apr may jun jul aug sep oct nov dec
+local filecount = 0
+*Small CPS Files have only a few variables in them compared to the usual
+*CPS files found at
+*https://www.census.gov/data/datasets/time-series/demo/cps/cps-basic.html
+foreach y of numlist 20/21 {
+
+  foreach m of local month {
+    *Show the year and month
+    display "`m'`y'"
+    local filename "`url'small_`m'`y'pub.dta?raw=true"
+    display "`filename'"
+    use "`filename'", clear
+    append using `cps'
+    save `cps', replace
+    clear
+	local filecount = `filecount' + 1
+  }
 }
-*Get all 3 years of CPS data
+*Retrieve the tempfile
 use `cps'
 
-*CPS MORG Data Dictionary
-*https://data.nber.org/morg/docs/cpsx.pdf
+*CPS Basic Data Dictionary
+*https://www2.census.gov/programs-surveys/cps/datasets/2022/basic/2020_Basic_CPS_Public_Use_Record_Layout_plus_IO_Code_list.txt
 
 *Check all years are there
-tab year
+tab hrmonth hryear4
 
 **********
 *By Sort and EGEN
@@ -131,51 +139,72 @@ tab year
 *1 is employed at work; 2 is employed absent; 3 is layoff; 4 is looking;
 *5 is NILF retired; 6 is NILF disabiled; and 7 is NILF other
 gen laborforce = .
-replace laborforce = 0 if lfsr94 >= 5 & lfsr94 <= 7
-replace laborforce = 1 if lfsr94 >= 1 & lfsr94 <= 4
+replace laborforce = 0 if pemlr >= 5 & pemlr <= 7
+replace laborforce = 1 if pemlr >= 1 & pemlr <= 4
 label define laborforce1 0 "NILF" 1 "Labor Force"
 label values laborforce laborforce1
 tab laborforce
 
+gen employed = .
+replace employed = 0 if pemlr >= 3 & pemlr <= 7
+replace employed = 1 if pemlr >= 1 & pemlr <= 2
+label define employed1 0 "Not Employed" 1 "Employed"
+label values employed employed1
+tab employed
+
 *Generate a race/ethnicity category from existing 
 gen race_ethnicity = .
-replace race_ethnicity = 1 if race == 1 & ethnic == .
-replace race_ethnicity = 2 if race == 2 & ethnic == .
-replace race_ethnicity = 3 if ethnic >= 1 & ethnic <= 8
-replace race_ethnicity = 4 if race == 3 & ethnic == .
-replace race_ethnicity = 5 if (race == 4 | race == 5) & ethnic == .
-replace race_ethnicity = 6 if (race >= 6 & race <= 26) & ethnic == .
+replace race_ethnicity = 1 if ptdtrace == 1 & pehspnon == 2
+replace race_ethnicity = 2 if ptdtrace == 2 & pehspnon == 2
+replace race_ethnicity = 3 if pehspnon == 1
+replace race_ethnicity = 4 if ptdtrace == 3 & pehspnon == 2
+replace race_ethnicity = 5 if (ptdtrace == 4 | ptdtrace == 5) & pehspnon == 2
+replace race_ethnicity = 6 if (ptdtrace >= 6 & ptdtrace <= 26) & pehspnon == 2
 label define race_ethnicity1 1 "White NH" 2 "Black NH" 3 "Hispanic or Latino/a" ///
 4 "Native American NH" 5 "Asian or Pacific Islander NH" 6 "Multiracial NH"
 label values race_ethnicity race_ethnicity1
 tab race_ethnicity 
 
 *Sort by Sex
-sort sex
+sort pesex
 *Summarize laborforce by sex
-by sex: sum laborforce
+by pesex: sum laborforce
 *Sort by Sex and Race
-sort sex race_ethnicity
+sort pesex race_ethnicity
 *Summarize laborforce by sex and race
-by sex race_ethnicity: sum laborforce
+by pesex race_ethnicity: sum laborforce
+
+*Generate Age Bin
+gen over_16 = .
+replace over_16 = 0 if prtage < 16
+replace over_16 = 1 if prtage >= 16
+label define over_16a 0 "Under 16" 1 "16 and older"
+label values over_16 over_16a
+tab over_16
 
 *Generate unweighted laborforce participation rate for each group
 *with by sort and egen
 *bysort works, as well, but I usually use sort on one line and by on the other
-sort sex race_ethnicity
-by sex race_ethnicity: egen mean_lfpr = mean(laborforce)
+sort pesex race_ethnicity
+by pesex race_ethnicity: egen mean_lfpr = mean(laborforce) if over_16 == 1
+by pesex race_ethnicity: sum mean_lfpr
+
+*Counting and indexing within groups
+gen idcount = .
+by pesex race_ethnicity: replace idcount = _n
+gen idcount2 = .
+by pesex race_ethnicity: replace idcount2 = idcount[_N]
 
 **********
 *Weights
 **********
 *Adjust weights
-*Usually we would need to divide by 12 for the Basic CPS
-*For the CPS NBER MORG, we need to divide by 3*x where x is the number of years
-*for a composite or for annual weights divide by 3
-gen earnwt2 = earnwt/9
-gen cmpwgt2 = cmpwgt/(3*3)
+*Usually we would need to divide by 12 for the Basic CPS to get annual weights
+gen cmpwgt2 = pwcmpwgt/12
+*Get a composite weight for all of the CPS files
+gen cmpwgt3 = pwcmpwgt/`filecount'
 
-svyset [pw=earnwt2], strata(cbsafips)
+svyset [pw=cmpwgt2]
 
-svy: tab laborforce year 
+svy: tab employed hryear4, count cellwidth(20) format(%20.2gc)
 
