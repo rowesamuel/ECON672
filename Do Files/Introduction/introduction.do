@@ -14,6 +14,45 @@ clear
 set more off 
 
 **********
+*Coding Guide
+*https://julianreif.com/guide/
+**********
+*Very good tips about repliciability and organization
+*Folder Structure
+
+*├── analysis/
+*    ├── data/
+*    ├── processed/
+*    ├── results/
+*        ├── figures/
+*        └── tables/
+*    ├── scripts/
+*        ├── 1_process_raw_data.do
+*        └── 2_...
+*    └── run.do
+*└── paper/
+*    ├── manuscript.tex
+*    ├── figures/
+*    └── tables/
+
+*You be able to pick up a folder and move computers and have it run
+
+*Automate Graphs and Figures
+*Stata makes saving graphs easy, so if there is a minor fix all you need to
+*do is rerun the scripts and have your graph fixed
+
+*Stata also has estout and outreg2 to output tables and regression from Stata
+*While it is easy to copy and paste tables, it is better to avoide this
+*Using estout or outreg2 will help you in the long-run
+
+*estout: 
+*http://repec.sowi.unibe.ch/stata/estout/index.html
+ssc install estout
+*outreg2: 
+*https://www.princeton.edu/~otorres/Outreg2.pdf
+ssc install outreg2
+
+**********
 *Macros
 **********
 
