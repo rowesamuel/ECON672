@@ -55,3 +55,5 @@ program define gap, rclass
 
 simulate mean, reps(10000): gap
 su _sim_1 
+
+

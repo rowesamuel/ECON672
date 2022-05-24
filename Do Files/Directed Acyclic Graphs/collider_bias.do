@@ -5,22 +5,48 @@
 clear
 set more off
 
+*********************************
+*Discrimination and Collider Bias
+*********************************
+
 set obs 10000 
 
 * Half of the population is female. 
-generate female = runiform()>=0.5 
+gen female = runiform()>=0.5 
 
 * Innate ability is independent of gender. 
-generate ability = rnormal() 
+gen ability = rnormal() 
 
 * All women experience discrimination. 
-generate discrimination = female 
+gen discrimination = female 
 
 * Data generating processes
-generate occupation = (1) + (2)*ability + (0)*female + (-2)*discrimination + rnormal() 
-generate wage = (1) + (-1)*discrimination + (1)*occupation + 2*ability + rnormal() 
+gen occupation = (1) + (2)*ability + (0)*female + (-2)*discrimination + rnormal() 
+gen wage = (1) + (-1)*discrimination + (1)*occupation + 2*ability + rnormal() 
 
 * Regressions
-regress wage discrimination 
-regress wage discrimination occupation 
-regress wage discrimination occupation ability
+reg wage discrimination 
+reg wage discrimination occupation 
+reg wage discrimination occupation ability
+
+***********************************
+*Sample selection and Collider Bias
+***********************************
+
+clear all 
+set seed 3444 
+
+* 2500 independent draws from standard normal distribution 
+set obs 2500 
+gen beauty=rnormal() 
+gen talent=rnormal() 
+
+* Creating the collider variable (star) 
+gen score=(beauty+talent) 
+egen c85=pctile(score), p(85)   
+gen star=(score>=c85) 
+label variable star "Movie star" 
+
+* Conditioning on the top 15\% 
+twoway (scatter beauty talent, mcolor(black) msize(small) msymbol(smx)), ///
+ ytitle(Beauty) xtitle(Talent) subtitle(Aspiring actors and actresses) by(star, total)
