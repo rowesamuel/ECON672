@@ -7,6 +7,9 @@
 clear
 set more off
 
+*Main Stata command
+help teffects
+
 ************************************
 *Generate Estimated Propensity Score
 ************************************
