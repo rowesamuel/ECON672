@@ -94,6 +94,9 @@ display "$j"
 * }
 *We'll demo this later, but it is quite useful
 
+*You can also use local macros to test regression models
+*We'll demo this later, as well
+
 **********
 *Looping
 **********
@@ -247,3 +250,61 @@ svyset [pw=cmpwgt2]
 
 svy: tab employed hryear4, count cellwidth(20) format(%20.2gc)
 
+***********
+*Mincer Equation Example
+***********
+*Recategorize Female
+gen female = .
+replace female = 0 if pesex == 1
+replace female = 1 if pesex == 2
+label define female1 0 "Male" 1 "Female"
+label values female female1
+
+*Generate Union
+gen union = .
+replace union = 0 if peernlab == 2
+replace union = 1 if peernlab == 1
+label define union1 0 "Nonunion" 1 "Union"
+label values union union1
+
+*Generate Educational Bins
+tab peeduca
+gen educ = .
+*High School Drop Out: from Less than 1st Grade to 12th Grade No Diploma
+replace educ = 1 if peeduca >= 31 & peeduca <38
+*Graduated High School or GED
+replace educ = 2 if peeduca == 39
+*Some College
+replace educ = 3 if peeduca == 40
+*AA Degree: Vocational or Academic
+replace educ = 4 if peeduca == 41 | peeduca == 42
+*Bachelor's Degree
+replace educ = 5 if peeduca == 43
+*Advanced Degree: Master's, Professional, or Doctorate
+replace educ = 6 if peeduca >= 44 & peeduca <= 46
+label define educ1 1 "High School Dropout" 2 "High School Graduate" ///
+                   3 "Some College" 4 "Associates (VorA) Degree" ///
+				   5 "Bachelor's Degree" 6 "Advanced Degree"
+label values educ educ1
+
+*Caveat with Generating Categorical Variables in Stata
+*Don't do peeduca >= 44 without peeduca <= 46 since missing values are very large
+*So you if do peeduca >= 44 and missing peeduca is . then missing will get 
+*Categorized in Advanced Degree which will be a measurement error
+
+*Generate Potential Experience
+gen exp = prtage - 16
+gen exp2 = exp*exp
+
+*You can use local macros for testing models
+local rhs1 educ exp exp2
+local rhs2 educ exp exp2 i.female
+local rhs3 educ exp exp2 i.female i.union
+local rhs4 educ exp exp2 i.female i.union i.hryear4 
+local rhs5 educ exp exp2 i.female i.union i.hryear4 i.peio1icd
+
+
+
+reg earnings `rhs1', robust
+reg earnings `rhs2', robust
+reg earnings `rhs3', robust
