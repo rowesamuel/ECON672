@@ -267,6 +267,10 @@ replace union = 1 if peernlab == 1
 label define union1 0 "Nonunion" 1 "Union"
 label values union union1
 
+*Earnings
+gen earnings = .
+replace earnings = pternwa if !missing(pternwa)
+
 *Generate Educational Bins
 tab peeduca
 gen educ = .
@@ -297,14 +301,16 @@ gen exp = prtage - 16
 gen exp2 = exp*exp
 
 *You can use local macros for testing models
-local rhs1 educ exp exp2
-local rhs2 educ exp exp2 i.female
-local rhs3 educ exp exp2 i.female i.union
-local rhs4 educ exp exp2 i.female i.union i.hryear4 
-local rhs5 educ exp exp2 i.female i.union i.hryear4 i.peio1icd
+local rhs1 i.educ exp exp2
+local rhs2 i.educ exp exp2 i.female
+local rhs3 i.educ exp exp2 i.female i.union
+local rhs4 i.educ exp exp2 i.female i.union i.hryear4 
+local rhs5 i.educ exp exp2 i.female i.union i.hryear4 i.peio1icd
 
 
 
 reg earnings `rhs1', robust
 reg earnings `rhs2', robust
 reg earnings `rhs3', robust
+reg earnings `rhs4', robust
+reg earnings `rhs5', robust
