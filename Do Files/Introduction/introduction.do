@@ -241,18 +241,36 @@ by pesex race_ethnicity: replace idcount2 = idcount[_N]
 *Weights
 **********
 *Adjust weights
+*In the CSV files the weights need to be divided by 1000 
+*Since the documentation says implies 4 decimals
+*Composite weights are used for final BLS tabulations of labor force
+gen cmpwgt2 = pwcmpwgt/10000
+*Outgoing Rotation Weights are used for earnings only person in interviews 4 and 8
+gen orwgt2 = pworwgt/10000
+*PWSSWGT weights are used for general tabulations of sex, race, states, etc.
+gen sswgt2 = pwsswgt/10000
+*PWVETWGT are used to study the veteran population 
+gen vetwgt2 = pwvetwgt/10000
+*PWLWGT are weighted used to study someone over multiple CPS interviews
+gen lgwgt2 = pwlgwgt/10000
+
 *Usually we would need to divide by 12 for the Basic CPS to get annual weights
-gen cmpwgt2 = pwcmpwgt/12
+replace cmpwgt2 = cmpwgt2/12
 *Get a composite weight for all of the CPS files
 gen cmpwgt3 = pwcmpwgt/`filecount'
 
+*Use the SvySet command to set up the survey design
 svyset [pw=cmpwgt2]
 
+*Use the svy: command vars to utilize the survey design
 svy: tab employed hryear4, count cellwidth(20) format(%20.2gc)
 
 ***********
 *Mincer Equation Example
 ***********
+*Important Note
+*Missing values are set to -1 in the CPS PUMS (public-use micro dataset)
+
 *Recategorize Female
 gen female = .
 replace female = 0 if pesex == 1
@@ -267,9 +285,12 @@ replace union = 1 if peernlab == 1
 label define union1 0 "Nonunion" 1 "Union"
 label values union union1
 
-*Earnings
+*Earnings - PTERNWA
+*Documentation says that they imply 2 decimals so we need to divide by 100
 gen earnings = .
-replace earnings = pternwa if !missing(pternwa)
+replace earnings = pternwa if pternwa >= 0
+*Divide by 100 for decimals
+replace earnings = earnings/100
 
 *Generate Educational Bins
 tab peeduca
