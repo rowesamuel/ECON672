@@ -327,11 +327,31 @@ local rhs2 i.educ exp exp2 i.female
 local rhs3 i.educ exp exp2 i.female i.union
 local rhs4 i.educ exp exp2 i.female i.union i.hryear4 
 local rhs5 i.educ exp exp2 i.female i.union i.hryear4 i.peio1icd
+*Add interaction between female and union
+local rhs6 i.educ exp exp2 i.female##i.union i.hryear4 i.peio1icd
 
 
-
+*Run our regression
 reg earnings `rhs1', robust
 reg earnings `rhs2', robust
 reg earnings `rhs3', robust
 reg earnings `rhs4', robust
 reg earnings `rhs5', robust
+reg earnings `rhs6', robust
+
+*Use esttab for formatted results
+*http://repec.org/bocode/e/estout/esttab.html
+local rhs4 i.educ exp exp2 i.female i.union i.hryear4 
+local rhs5 i.educ exp exp2 i.female i.union i.hryear4 i.peio1icd
+*Add interaction between female and union
+local rhs6 i.educ exp exp2 i.female##i.union i.hryear4 i.peio1icd
+
+est clear
+*Use eststo to save a model
+eststo reg1: reg earnings `rhs4'
+eststo reg2: reg earnings `rhs5'
+eststo reg3: reg earnings `rhs6'
+*Output the results
+esttab, title (Mincer Equation) r2 se noconstant star(* .10 ** .05 *** .01) ///
+ b(%10.3f) drop (*peio1icd) wide label
+
