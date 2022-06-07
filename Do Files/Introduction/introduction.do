@@ -156,10 +156,14 @@ foreach y of numlist 20/21 {
     display "`m'`y'"
     local filename "`url'small_`m'`y'pub.dta?raw=true"
     display "`filename'"
-    use "`filename'", clear
+    *Open the monthly data file
+	use "`filename'", clear
+	*Append monthly data file to cps tempfile
     append using `cps'
+	*Save the tempfile with appended data
     save `cps', replace
     clear
+	*Count the number of monthly files appended
 	local filecount = `filecount' + 1
   }
 }
