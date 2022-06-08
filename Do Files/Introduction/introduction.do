@@ -182,7 +182,7 @@ tab hrmonth hryear4
 *You can summarize, replace, or create new variables by multiple groups 
 *with the by sort and egen commands
 *Let's generate laborforce
-*1 is employed at work; 2 is employed absent; 3 is layoff; 4 is looking;
+*1 is employed at work; 2 is employed absent; 3 is unemployed layoff; 4 is unemployed looking;
 *5 is NILF retired; 6 is NILF disabiled; and 7 is NILF other
 gen laborforce = .
 replace laborforce = 0 if pemlr >= 5 & pemlr <= 7
