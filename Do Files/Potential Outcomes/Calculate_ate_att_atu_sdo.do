@@ -42,3 +42,5 @@ replace mean_y0_d0_a = mean_y0_d0_a[_n-1] if missing(mean_y0_d0_a)
 gen sdo = .
 replace sdo = mean_y1_d1_a - mean_y0_d0_a
 
+list ate sdo if _n ==1
+
