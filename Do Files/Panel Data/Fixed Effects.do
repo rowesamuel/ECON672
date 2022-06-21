@@ -11,10 +11,11 @@ set more off
 use https://github.com/scunning1975/mixtape/raw/master/sasp_panel.dta, clear
 *Set up the panel with tsset
 *tsset unit(i) time(t)
-*You could use xtset
+*You could use xtset and I recommend using xtset instead of tsset for panel data
 *tsset id session
 xtset id session
 
+*Find units with 4 observations
 local varlist lnw age asq bmi hispanic black other asian schooling cohab married divorced separated age_cl unsafe llength reg asq_cl appearance_cl provider_second asian_cl black_cl hispanic_cl othrace_cl hot massage_cl 
 foreach x of local varlist {
   drop if `x'==.
@@ -253,11 +254,7 @@ gen ln_wages = ln(pternwa)
 *Demean
 **************
 local vars1 ln_wages educ exp exp2 female race_ethnicity union peio1icd
-foreach x of local vars1 {
-  drop if `x'==.
-  bysort id: gen s=_N
-  drop s
-}
+
 *Demean the Data
 foreach x of local vars1 {
   egen mean_`x'=mean(`x'), by(id)
