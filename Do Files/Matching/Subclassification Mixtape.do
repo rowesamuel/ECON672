@@ -143,3 +143,6 @@ gen wate=diff1*wt1 + diff2*wt2 + diff3*wt3 + diff4*wt4
 *Compare Weighted Average Treatment Effect with Simple Difference in Outcomes
 sum wate sdo
 
+*The SDO is biased upwards 
+*The weighted ATE is 19.9% while the SDO is 35.3%
+
