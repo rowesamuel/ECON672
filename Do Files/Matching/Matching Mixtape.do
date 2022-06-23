@@ -37,4 +37,6 @@ sum earnings_matched earnings_matched
 *Calculate ATE-hat
 egen mean_y0_matched = mean(earnings_matched)
 gen ate_hat=mean_y1-mean_y0_matched
+sum ate_hat
 
+*The delta-hat shows an increase of $1695 for D

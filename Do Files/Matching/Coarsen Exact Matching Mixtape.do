@@ -33,3 +33,5 @@ gen interaction2 = u74*hisp
 *Run coarsen exact matching
 cem age (10 20 30 40 60) age agesq agecube educ edusq marr nodegree black hisp re74 re75 u74 u75 interaction1, treatment(treat) 
 reg re78 treat [iweight=cem_weights], robust
+
+*The delta-hat for training is $2152.38

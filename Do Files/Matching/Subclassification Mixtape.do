@@ -37,7 +37,10 @@ gen ey0=r(mean)
 gen sdo=ey1-ey0
 sum sdo
 *The SDO says that the chance for survival is 35.4% for 1st class, but it is
-*biased. We will turn to a subclassification to take care of age and sex
+*biased. We will turn to a subclassification to take care of age and sex to
+*calculate a weighted average treatment effect
+
+
 
 ******************
 *Calculate ATE with Subclassification
@@ -144,5 +147,6 @@ gen wate=diff1*wt1 + diff2*wt2 + diff3*wt3 + diff4*wt4
 sum wate sdo
 
 *The SDO is biased upwards 
-*The weighted ATE is 19.9% while the SDO is 35.3%
-
+*The weighted ATE is 18.9% while the SDO is 35.3%
+*If we estimate a LPM, our estimate of delta-hat is 22.3%
+reg survived i.d i.female##i.age
