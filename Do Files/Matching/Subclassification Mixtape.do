@@ -67,7 +67,7 @@ replace s=1 if (female==1 & age==1)
 replace s=2 if (female==1 & age==0)
 replace s=3 if (female==0 & age==1)
 replace s=4 if (female==0 & age==0)
-label define s1 1 "Female Child" 2 "Female Adult" 3 "Male Child" 4 "Male Adult"
+label define s1 1 "Female Adult" 2 "Female Child" 3 "Male Adult" 4 "Male Child"
 label values s s1
 *******
 *Step 2: Calculate difference in survival probabilities for each group

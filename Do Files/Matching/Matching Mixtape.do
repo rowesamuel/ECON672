@@ -32,11 +32,11 @@ histogram age_treat, bin(10) frequency
 histogram age_matched, bin(10) frequency
 *Summarize overlap between treatment and matched control
 sum age_treat age_control
-sum earnings_matched earnings_matched
+sum earnings_treat earnings_matched
 
 *Calculate ATE-hat
 egen mean_y0_matched = mean(earnings_matched)
 gen ate_hat=mean_y1-mean_y0_matched
 sum ate_hat
-
+list sdo ate_hat
 *The delta-hat shows an increase of $1695 for D
