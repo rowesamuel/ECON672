@@ -141,7 +141,7 @@ sum ht norm
 * ATE under non-normalized weights is $2,006
 * ATE under normalized weights is $1,806
 ************************************
-*STATA's teffects command
+*STATA's teffects command n-nearest neighbor
 ************************************
 ************************************
 *Generate Estimated Propensity Score
