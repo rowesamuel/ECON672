@@ -71,8 +71,8 @@ histogram pscore, by(treat) binrescale
 gen d1=treat/pscore
 gen d0=(1-treat)/(1-pscore)
 *Sum the inverse pscore
-egen s1=sum(d1)
-egen s0=sum(d0)
+egen s1=sum(wt) if leg_black==1
+egen s0=sum(d0) if leg_black==0
 gen total = _N
 egen total_T = sum(treat)
 egen total_C = sum(1-treat)
