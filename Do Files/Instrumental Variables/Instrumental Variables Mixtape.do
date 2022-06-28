@@ -22,8 +22,24 @@ ivregress 2sls lwage (educ=nearc4) exper black south married smsa, first
 * First stage regression of schooling (educ) on all covariates and the college and the county variable
 reg educ nearc4 exper black south married smsa
 
-* F test on the excludability of college in the county from the first stage regression.
+* F-test on the excludability of college in the county from the first stage regression.
 test nearc4
+
+*Test monotonicity 
+*Get first-stage estimate
+reg educ nearc4 exper black south married smsa
+predict dhat
+
+*Average outcome across dhat
+*Get Bins of outcomes
+sum lwage, detail
+egen lwage_bins = cut(lwage), at(5,5.5,6,6.5,7,7.5)
+sort lwage_bins
+by lwage_bins: egen dhat_mean=mean(dhat)
+
+*Show graph
+sort dhat_mean
+twoway line lwage_bins dhat_mean
 
 **************************
 *Stevenson Bail Judges IV
