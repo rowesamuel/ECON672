@@ -22,6 +22,7 @@ ivregress 2sls lwage (educ=nearc4) exper black south married smsa, first
 * First stage regression of schooling (educ) on all covariates and the college and the county variable
 reg educ nearc4 exper black south married smsa
 
+* F-test on 1-stage
 * F-test on the excludability of college in the county from the first stage regression.
 test nearc4
 
