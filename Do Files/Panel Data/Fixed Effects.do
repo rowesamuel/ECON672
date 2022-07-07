@@ -275,3 +275,11 @@ xtreg ln_wages exp exp2 i.educ female race_ethnicity union i.peio1icd, fe robust
 *Demean (Slightly different than Fixed Effects due to categorical variables)
 reg demean_ln_wages demean_exp demean_exp2 demean_educ demean_female demean_race_ethnicity demean_union demean_peio1icd, robust cluster(id)
 *One problem is that we cannot study race, ethnicity, or sex with fixed effects
+
+*Pooled OLS shows that unionization is associated with ~16.1 percent increase
+*in wages
+*Within Fixed Effects Estimators shows that unionization ~2.7 percent increase
+*in wages - which is unbiased if the strict exogeneity assumption hold (no
+*time-varying heterogeneity)
+*The demeaned OLS shows a similar result to the Within Fixed Effects estimator
+
