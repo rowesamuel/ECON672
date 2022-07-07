@@ -6,7 +6,7 @@ clear
 set more off
 
 ************************
-*Exercise
+*Mixtape Exercise
 ************************
 use https://github.com/scunning1975/mixtape/raw/master/sasp_panel.dta, clear
 *Set up the panel with tsset
@@ -46,6 +46,13 @@ esttab pooled fixed demean
 ************************
 *CPS
 ************************
+*What is the impact of unionization on wages?
+*We can get a correlation by including unionization but it will be
+*correlated/endogenous with other factors of interest (schooling, ability, etc.).
+*We want to set up a panel to control for time-invariant heterogeneity to 
+*assess the impact of unionization on wages
+
+
 *Appending multiple CPS files 
 *Get CPS Data
 clear
