@@ -15,13 +15,13 @@ use https://github.com/scunning1975/mixtape/raw/master/card.dta, clear
 
 * OLS estimate of schooling (educ) on log wages
 * We know that the estimate delta on educ is biased - self selection into schooling
-reg lwage  educ  exper black south married smsa
+reg lwage  educ  exper black south married i.smsa
 * Returns to education is a 7.3 percent increase with a marginal increase of 1 year
 
 
 * We can use the 
 * 2SLS estimate of schooling (educ) on log wages using "college in the county" as an instrument for schooling
-ivregress 2sls lwage (educ=nearc4) exper black south married smsa, first 
+ivregress 2sls lwage (educ=nearc4) exper black south married i.smsa, first 
 * Our 2SLS estimate of the LATE is 13.5%.  Being near a college increases
 * the wages by 13.5% for compliers 
 
