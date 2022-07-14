@@ -49,6 +49,8 @@ xlabel(0 "0" 20 "20" 40 "40" ///
 ****************************
 *Nonlinear Data generation process
 ****************************
+*What happens when we have nonlinear or polynomial-based
+*functional form between y and x?
 drop y y1 x* D
 set obs 1000
 gen x = rnormal(100, 50)
@@ -56,7 +58,12 @@ replace x=0 if x < 0
 drop if x > 280
 sum x, det
 
-* Set the cutoff at X=140. Treated if X > 140
+*Set the cutoff at X=140. Treated if X > 140
+*There isn't a discontinuous jump at 140 but since 
+*there is an incorrect functional form, it shows
+*that there is a discontinous jump
+
+*Set up a polynomial function form
 gen D = 0
 replace D = 1 if x > 140
 gen x2 = x*x
@@ -64,6 +71,7 @@ gen x3 = x*x*x
 gen y = 10000 + 0*D - 100*x +x2 + rnormal(0, 1000)
 reg y D x
 
+*Visualize the incorrect function form RDD
 scatter y x if D==0, msize(vsmall) || scatter y x ///
   if D==1, msize(vsmall) legend(off) xline(140, ///
   lstyle(foreground)) ylabel(none) || lfit y x ///
@@ -72,12 +80,13 @@ scatter y x if D==0, msize(vsmall) || scatter y x ///
   ytitle("Outcome (Y)") title("Applying Linear Fit to Nonlinear Data") ///
   caption("Spurious discontinuity effect due to incorrect specification")
 
-* Polynomial estimation
+*Let's attempt Polynomial estimation
 capture drop y 
 gen y = 10000 + 0*D - 100*x +x2 + rnormal(0, 1000)
 reg y D x x2 x3
 predict yhat 
 
+*Visual no discontinuous jump
 scatter y x if D==0, msize(vsmall) || scatter y x ///
   if D==1, msize(vsmall) legend(off) xline(140, ///
   lstyle(foreground)) ylabel(none) || line yhat x ///
