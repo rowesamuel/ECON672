@@ -32,6 +32,7 @@ reg democrat lagdemocrat if lagdemvoteshare>.48 & lagdemvoteshare<.52, cluster(i
 *Using all of the data instead of just the window around the cutoff
 *The window is 0.48 and 0.52 with a cutoff at 0.5, but here we look
 *at all of the data 
+*This is the full data set and not a window and linear
 * Stata code attributed to Marcelo Perraillon.
 reg score lagdemocrat, cluster(id)
 reg score democrat, cluster(id)
@@ -145,7 +146,7 @@ xline(0.5,lstyle(dot)) legend(off) xtitle("Democratic vote share") ytitle("ADA s
 *RDRobust optimizes the tradeoff by choosing the optimal bandwidth sizes
 *Which may vary to the left or right of the cutoff.
 *Use local polynomial point estimators with bias correction
-ssc install rdrobust
+*ssc install rdrobust
 rdrobust score demvoteshare, c(0.5)
 
 ************************

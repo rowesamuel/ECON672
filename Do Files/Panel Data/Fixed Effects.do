@@ -66,7 +66,7 @@ tempfile cps
 save `cps', emptyok
 
 *Use Census CPS instead of NBER MORG
-
+cd "/Users/Sam/Desktop/Econ 672/Course Material/ECON672/Data/Introduction"
 *Loop over each year and month to append monthly CPS files into 1 cps file
 local month jan feb mar apr may jun jul aug sep oct nov dec
 local filecount = 0
@@ -78,8 +78,9 @@ foreach y of numlist 20/21 {
   foreach m of local month {
     *Show the year and month
     display "`m'`y'"
-    local filename "`url'small_`m'`y'pub.dta?raw=true"
-    display "`filename'"
+    *local filename "`url'small_`m'`y'pub.dta?raw=true"
+    local filename "small_`m'`y'pub.dta"
+	display "`filename'"
     *Open the monthly data file
 	use "`filename'", clear
 	*Append monthly data file to cps tempfile
@@ -210,13 +211,15 @@ replace female = 0 if pesex == 1
 replace female = 1 if pesex == 2
 label define female1 0 "Male" 1 "Female"
 label values female female1
+label variable female "Individual is Female"
 
-*Generate Union
+*Generate Union - Treatment variable of interest
 gen union = .
 replace union = 0 if peernlab == 2
 replace union = 1 if peernlab == 1
 label define union1 0 "Nonunion" 1 "Union"
 label values union union1
+label variable "Individual
 
 *Earnings - PTERNWA
 *Documentation says that they imply 2 decimals so we need to divide by 100
@@ -269,13 +272,15 @@ foreach x of local vars1 {
   drop mean*
 }
 *Pooled
-reg ln_wages exp exp2 i.educ female race_ethnicity union i.peio1icd, robust
+est clear
+eststo: reg ln_wages exp exp2 i.educ female race_ethnicity union i.peio1icd, robust
 *Panel Fixed Effects (Within Estimator)
-xtreg ln_wages exp exp2 i.educ female race_ethnicity union i.peio1icd, fe robust
+eststo: xtreg ln_wages exp exp2 i.educ female race_ethnicity union i.peio1icd, fe robust
 *Demean (Slightly different than Fixed Effects due to categorical variables)
 reg demean_ln_wages demean_exp demean_exp2 demean_educ demean_female demean_race_ethnicity demean_union demean_peio1icd, robust cluster(id)
 *One problem is that we cannot study race, ethnicity, or sex with fixed effects
 
+esttab, wide
 *Pooled OLS shows that unionization is associated with ~16.1 percent increase
 *in wages
 *Within Fixed Effects Estimators shows that unionization ~2.7 percent increase
