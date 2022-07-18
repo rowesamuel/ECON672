@@ -66,7 +66,7 @@ tempfile cps
 save `cps', emptyok
 
 *Use Census CPS instead of NBER MORG
-cd "/Users/Sam/Desktop/Econ 672/Course Material/ECON672/Data/Introduction"
+*cd "/Users/Sam/Desktop/Econ 672/Course Material/ECON672/Data/Introduction"
 *Loop over each year and month to append monthly CPS files into 1 cps file
 local month jan feb mar apr may jun jul aug sep oct nov dec
 local filecount = 0
@@ -78,8 +78,8 @@ foreach y of numlist 20/21 {
   foreach m of local month {
     *Show the year and month
     display "`m'`y'"
-    *local filename "`url'small_`m'`y'pub.dta?raw=true"
-    local filename "small_`m'`y'pub.dta"
+    local filename "`url'small_`m'`y'pub.dta?raw=true"
+    *local filename "small_`m'`y'pub.dta"
 	display "`filename'"
     *Open the monthly data file
 	use "`filename'", clear
