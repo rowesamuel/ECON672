@@ -12,10 +12,17 @@ use https://github.com/scunning1975/mixtape/raw/master/lmb-data.dta, clear
 *Replication of Results from Lee, Moretti, and Butler (2004)
 ************************
 * Replicating Table 1 of Lee, Moretti and Butler (2004)
+*Total Effect gamma
 reg score lagdemocrat    if lagdemvoteshare>.48 & lagdemvoteshare<.52, cluster(id)
+*Pi1
 reg score democrat       if lagdemvoteshare>.48 & lagdemvoteshare<.52, cluster(id)
+*PDt+1 - PRt+1
 reg democrat lagdemocrat if lagdemvoteshare>.48 & lagdemvoteshare<.52, cluster(id)
 
+*Pi1 is "elect"
+*total effect gamma - (pi1 * (PDt+1 - PRt+1)) = Pi0 "affect"
+
+*The gap at 0.5 comes from Pi1 or "elect" and not Pi0 or "affect"
 
 *************************
 *First we will step through the process of estimating a local regression
