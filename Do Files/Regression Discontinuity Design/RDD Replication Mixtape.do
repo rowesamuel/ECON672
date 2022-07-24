@@ -143,6 +143,10 @@ lpoly score demvoteshare if democrat == 1, nograph kernel(triangle) gen(x1 sdem1
 scatter sdem1 x1, color(red) msize(small) || scatter sdem0 x0, msize(small) color(red) ///
 xline(0.5,lstyle(dot)) legend(off) xtitle("Democratic vote share") ytitle("ADA score")
 
+*Estimate the local polynomial LATE
+gen diff = sdem1 - sdem0
+list sdem1 sdem0 diff in 1/1
+
 ************************
 *RDRobust
 ************************
@@ -154,6 +158,8 @@ xline(0.5,lstyle(dot)) legend(off) xtitle("Democratic vote share") ytitle("ADA s
 *Which may vary to the left or right of the cutoff.
 *Use local polynomial point estimators with bias correction
 *ssc install rdrobust
+
+*Estimate the LATE with RDrobust
 rdrobust score demvoteshare, c(0.5)
 
 ************************

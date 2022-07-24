@@ -71,3 +71,7 @@ global law cdl
 areg l_homicide post i.year, a(sid) robust
 *See the 2-by-2 DD estimates with corresponding weights
 ddtiming l_homicide post, i(sid) t(year)
+
+********************************
+*TWFEDD Borusyak et al (2021)
+********************************
