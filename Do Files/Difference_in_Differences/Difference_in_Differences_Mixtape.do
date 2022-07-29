@@ -69,7 +69,7 @@ xi: reg lnr i.repeal*i.year i.fip acc ir pi alcohol crack poverty income ur if b
 *ssc install parmest, replace
 *If you have Stata 15 or older
 *Run the following, Select Stata 11, and select parmest
-*net from "http://www.rogernewsonresources.org.uk/"
+net from "http://www.rogernewsonresources.org.uk/"
 
 *Get the parameter estimates for graph	
 parmest, label for(estimate min95 max95 %8.2f) li(parm label estimate min95 max95) ///
@@ -235,5 +235,5 @@ xi: reg lnr i.repeal*i.year i.younger2*i.repeal i.younger2*i.year i.yr2*i.year /
   [aweight=totpop], cluster(fip) 
   
 *OR
-reg lnr i.repeal##i.year##i.younger2 i.fip*t acc pi ir alcohol crack  poverty ///
+reg lnr i.repeal##i.year##i.younger2 i.fip##c.t acc pi ir alcohol crack  poverty ///
  income ur if bf==1 & (age==20 | age==25) [aweight=totpop], cluster(fip) 
