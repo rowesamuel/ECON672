@@ -219,7 +219,7 @@ replace union = 0 if peernlab == 2
 replace union = 1 if peernlab == 1
 label define union1 0 "Nonunion" 1 "Union"
 label values union union1
-label variable "Individual
+label variable "Individual is a Union Member"
 
 *Earnings - PTERNWA
 *Documentation says that they imply 2 decimals so we need to divide by 100
