@@ -9,4 +9,4 @@ Data repository for Causal Inference the Mixtape: https://github.com/scunning197
 
 Stata Help from IDRE UCLA: https://stats.oarc.ucla.edu/stata/ 
 
-Statalist: https://www.statalist.org/
+Statalist: https://www.statalist.org/# ECON_672
