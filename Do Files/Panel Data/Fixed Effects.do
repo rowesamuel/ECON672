@@ -175,6 +175,8 @@ by id: gen id_count2 = _N
 tab id_count2
 drop if id_count2 == 1
 
+xtset id hryear4
+
 *******************
 *Generate variables
 *******************
