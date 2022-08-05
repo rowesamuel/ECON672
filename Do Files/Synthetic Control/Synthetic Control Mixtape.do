@@ -10,7 +10,9 @@ pwd
 *mkdir "synth_example"
 cd "synth_example"
 
+****************
 * Estimation 1: Texas model of black male prisoners (per capita) 
+****************
 use https://github.com/scunning1975/mixtape/raw/master/texas.dta, clear
 save texas.dta, replace
 
@@ -73,6 +75,11 @@ synth 	bmprison bmprison(1988) bmprison(1990) bmprison(1991) bmprison(1992) ///
 			perc1519(1990), trunit(48) trperiod(1993) unitnames(state) ///
 		mspeperiod(1985(1)1993) resultsperiod(1985(1)2000) ///
 		keep(synth_bmprate.dta) replace fig
+
+*Display the V matrix for weights of the predictive covariates
+*V is the relative importance of our mth covariate.
+*Remember that our construction of synthetic weights w(v) is a function of 
+*our choices of predictive covariates 
 mat list e(V_matrix)
 
 *Save the graph 
@@ -101,7 +108,7 @@ sort year
  
 twoway (line gap48 year,lp(solid)lw(vthin)lcolor(black)), yline(0, lpattern(shortdash) lcolor(black)) ///
 	xline(1993, lpattern(shortdash) lcolor(black)) xtitle("Year",si(medsmall)) xlabel(#10) ///
-	ytitle("Gap in black male prisoner rates", size(medsmall)) legend(off)
+	ytitle("Gap in black male prisoners", size(medsmall)) legend(off)
 
 save synth_bmprate_48.dta, replace
 
@@ -113,6 +120,7 @@ save synth_bmprate_48.dta, replace
 * placebos.  
 use texas.dta, clear
 *Set local macro with fips codes for the 39 states used
+*We will want to include Texas as part of the donor pool for each placebo test
 local statelist  1 2 4 5 6 8 9 10 11 12 13 15 16 17 18 20 21 22 23 24 25 26 27 28 ///
                  29 30 31 32 33 34 35 36 37 38 39 40 41 42 45 46 47 48 49 51 53 55 
 *Loop through each state
@@ -125,7 +133,7 @@ synth 	bmprison  ///
 			trunit(`i') trperiod(1993) unitnames(state) ///
 			mspeperiod(1985(1)1993) resultsperiod(1985(1)2000) /// 
 			keep(synth_bmprate_`i'.dta) replace
-  /* check the V matrix*/
+  /* check the V matrix */
   matrix state`i' = e(RMSPE)  
 }
   foreach i of local statelist {
@@ -135,11 +143,10 @@ synth 	bmprison  ///
 *****************************
 *Generate Gaps for each state
 *****************************
-* Divergence between Mixtape and my work
+* Note: Here begins a divergence between Mixtape and my work
 * It is much easier to use a long format for the data instead of wide
 * We will generate a gap between treat and control for each year
-* and we will 
-*Loop through each state and calculate a gap
+* and we will loop through each state and calculate a gap
 local statelist  1 2 4 5 6 8 9 10 11 12 13 15 16 17 18 20 21 22 23 24 25 26 27 28 ///
                  29 30 31 32 33 34 35 36 37 38 39 40 41 42 45 46 47 48 49 51 53 55
  foreach i of local statelist {
@@ -154,7 +161,7 @@ local statelist  1 2 4 5 6 8 9 10 11 12 13 15 16 17 18 20 21 22 23 24 25 26 27 2
 	gen state = `i'
  	save synth_gap_bmprate`i', replace
 }
-*Append all placebos to main treatment effect
+*Append all placebos to main treatment effect into a tempfile
 tempfile gap
 save `gap', emptyok
 clear
@@ -165,6 +172,8 @@ foreach i of local statelist {
 	append using synth_gap_bmprate`i'
 	save `gap', replace 
 }
+*Our placebo_pmprate.dta file will be in long format not wide format
+*This will save us a lot of headache below
 save placebo_bmprate.dta, replace
 ********************
 * Inference 2: Exact p-values
