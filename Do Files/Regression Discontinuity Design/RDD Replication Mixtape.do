@@ -116,8 +116,10 @@ reg democrat i.lagdemocrat##c.(demvoteshare_c demvoteshare_sq) if lagdemvoteshar
 ssc install cmogram //If this gives you an error, please comment it out and install cmogram manually
 *Visualize Quadratic Fit
 cmogram score lagdemvoteshare, cut(0.5) scatter line(0.5) qfitci
+cmogram score lagdemvoteshare if lagdemvoteshare > 0.4 & lagdemvoteshare < 0.6, cut(0.5) scatter line(0.5) qfitci
 *Visualize Linear Fit
 cmogram score lagdemvoteshare, cut(0.5) scatter line(0.5) lfit
+cmogram score lagdemvoteshare if lagdemvoteshare > 0.4 & lagdemvoteshare < 0.6, cut(0.5) scatter line(0.5) lfit
 *Visualize Lowess Fit
 cmogram score lagdemvoteshare, cut(0.5) scatter line(0.5) lowess
 

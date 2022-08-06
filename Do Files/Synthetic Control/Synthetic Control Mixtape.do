@@ -192,14 +192,15 @@ gen ratio=rmspe/rmspe[_n-1] if 1994
 gen rmspe_post=sqrt(postmean) if year>1993
 gen rmspe_pre=rmspe[_n-1] if 1994
 
-save synth_rmspe.dta
+save synth_rmspe.dta, replace
 
 keep if year == 1994
 
 *Generate Rank and exact p-value
 gsort -ratio
 gen rank = _n
-gen p=rank/46
+gen total = _N
+gen p=rank/total
 histogram ratio, bin(20) frequency fcolor(gs13) lcolor(black) ylabel(0(2)10) /// 
 	xtitle(Post/pre RMSPE ratio) xlabel(0(1)20)
 * Show the post/pre RMSPE ratio for all states, generate the histogram.
