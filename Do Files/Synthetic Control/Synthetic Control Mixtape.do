@@ -18,7 +18,7 @@ save texas.dta, replace
 
 *Install Packages
 ssc install synth 
-ssc install mat2txt
+*ssc install mat2txt
 
 *Pull Main data
 use texas.dta, clear
@@ -51,8 +51,6 @@ xtset statefip year
 
 *We can use unitnames as state to use State Names instead of fips codes 
 *unitnames(state) option
-
-*We need to set the 
 
 *We need to set the mspeperiod(numlist) a list of pre-intervention time periods 
 *over which the mean squared prediction error (MSPE) should be minimized
