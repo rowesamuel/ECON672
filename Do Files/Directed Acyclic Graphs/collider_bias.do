@@ -21,13 +21,35 @@ gen ability = rnormal()
 gen discrimination = female 
 
 * Data generating processes
+* We will hard code occupation to be a function of 
+* ability, female, and discrimination
+* We will hard code ability to be 2 on occupation
+* We will hard code female to be 0 on occupation
+* We will hard code discrimination to be -2 on occupation
 gen occupation = (1) + (2)*ability + (0)*female + (-2)*discrimination + rnormal() 
+* We hard code earnings to be a function of 
+* discrimination, ability, and occupation
+* We will hard code discrimination to be -1
+* We will hard code occupation to be 1
+* We will hard code ability to be 2
 gen wage = (1) + (-1)*discrimination + (1)*occupation + 2*ability + rnormal() 
 
+
 * Regressions
+
+* In the first regression we have a large negative number.
+* Since this is the combination of the direct effect of discrimination
+* and the indirect effect through occupation.
 reg wage discrimination 
+
+* If we control for occupation like the Google study
+* We get a positive value on discriminationWe know that discrimination should be -1 and not positive as we 
 reg wage discrimination occupation 
+
+* When we control for occupation and ability, the direct effect of 
+* discrimination is seen
 reg wage discrimination occupation ability
+
 
 ***********************************
 *Sample selection and Collider Bias
