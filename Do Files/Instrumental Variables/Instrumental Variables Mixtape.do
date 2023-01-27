@@ -46,10 +46,15 @@ sum lwage, detail
 egen lwage_bins = cut(lwage), at(5,5.5,6,6.5,7,7.5)
 sort lwage_bins
 by lwage_bins: egen dhat_mean=mean(dhat)
+by lwage_bins: egen mean_z=mean(nearc4)
 
-*Show graph
+*Show Monotonicity Graph 
+*By D-Hat
 sort dhat_mean
 twoway line lwage_bins dhat_mean
+*By Z
+sort mean_z
+twoway line lwage_bins mean_z
 
 **************************
 *Stevenson Bail Judges IV
